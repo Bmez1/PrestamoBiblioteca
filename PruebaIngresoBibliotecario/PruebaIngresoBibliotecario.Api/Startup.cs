@@ -6,8 +6,9 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
-
-
+using PruebaIngresoBibliotecario.Infraestructura.Context;
+using PruebaIngresoblibliotecario.Core;
+using PruebaIngresoBibliotecario.Infraestructura;
 
 namespace PruebaIngresoBibliotecario.Api
 {
@@ -26,9 +27,18 @@ namespace PruebaIngresoBibliotecario.Api
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddSwaggerDocument();
 
-            services.AddDbContext<Infrastructure.PersistenceContext>(opt =>
+            services.AddSwaggerDocument(config =>
+            {
+                config.PostProcess = document =>
+                {
+                    document.Info.Version = "v1";
+                    document.Info.Title = "Prestamo Biblitecario";
+                    document.Info.Description = "Prueba ingreso Daniel Barros Agamez";
+                };
+            });
+
+            services.AddDbContext<PersistenceContext>(opt =>
             {
                 opt.UseInMemoryDatabase("PruebaIngreso");
             });
@@ -36,6 +46,9 @@ namespace PruebaIngresoBibliotecario.Api
             services.AddControllers(mvcOpts =>
             {
             });
+
+            services.AddInfrastructureServices();
+            services.AddCoreServices();
 
         }
 
