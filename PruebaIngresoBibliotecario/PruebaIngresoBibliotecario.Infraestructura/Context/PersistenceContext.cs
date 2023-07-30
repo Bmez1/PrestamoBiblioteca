@@ -1,9 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using PruebaIngresoblibliotecario.Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace PruebaIngresoBibliotecario.Infraestructura.Context
@@ -17,9 +14,7 @@ namespace PruebaIngresoBibliotecario.Infraestructura.Context
             Config = config;
         }
 
-
         public DbSet<Prestamo> Prestamos { get; set; }
-
 
         public async Task CommitAsync()
         {

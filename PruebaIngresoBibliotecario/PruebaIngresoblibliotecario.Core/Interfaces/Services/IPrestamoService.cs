@@ -1,7 +1,9 @@
-﻿using PruebaIngresoblibliotecario.Core.Entities;
+﻿using PruebaIngresoblibliotecario.Core.DTOs;
+using PruebaIngresoblibliotecario.Core.DTOs.Inputs;
+using PruebaIngresoblibliotecario.Core.Entities;
+using PruebaIngresoblibliotecario.Core.utils;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace PruebaIngresoblibliotecario.Core.Interfaces.Services
@@ -9,7 +11,11 @@ namespace PruebaIngresoblibliotecario.Core.Interfaces.Services
     public interface IPrestamoService
     {
         Task<IEnumerable<Prestamo>> GetAllAsync();
-        Task<Prestamo> GetByIdAsync(Guid id);
-        Task<Prestamo> CreateAsync(Prestamo prestamo);
+
+        Task<DataPrestamoDto> GetByIdAsync(Guid id);
+
+        Task<PrestamoCreadoDto> CreateAsync(CrearPrestamoDto prestamoDTO);
+
+        Task<Respuesta> DevolverPrestamo(DevolverPrestamoInput prestamo);
     }
 }

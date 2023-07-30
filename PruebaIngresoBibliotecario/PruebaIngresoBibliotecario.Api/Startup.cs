@@ -1,14 +1,15 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using System;
-using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using PruebaIngresoBibliotecario.Api.Middleware;
+using PruebaIngresoBibliotecario.Infraestructura;
 using PruebaIngresoBibliotecario.Infraestructura.Context;
 using PruebaIngresoblibliotecario.Core;
-using PruebaIngresoBibliotecario.Infraestructura;
+using System;
+using System.Diagnostics;
 
 namespace PruebaIngresoBibliotecario.Api
 {
@@ -26,8 +27,6 @@ namespace PruebaIngresoBibliotecario.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-
-
             services.AddSwaggerDocument(config =>
             {
                 config.PostProcess = document =>
@@ -49,9 +48,7 @@ namespace PruebaIngresoBibliotecario.Api
 
             services.AddInfrastructureServices();
             services.AddCoreServices();
-
         }
-
 
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -60,6 +57,8 @@ namespace PruebaIngresoBibliotecario.Api
                 app.UseDeveloperExceptionPage();
             }
 
+            // Middleware para el manejo de excepciones globales
+            app.UseMiddleware<HandleError>();
 
             app.UseHttpsRedirection();
             app.UseRouting();
@@ -71,7 +70,6 @@ namespace PruebaIngresoBibliotecario.Api
 
             app.UseOpenApi();
             app.UseSwaggerUi3();
-
         }
     }
 }

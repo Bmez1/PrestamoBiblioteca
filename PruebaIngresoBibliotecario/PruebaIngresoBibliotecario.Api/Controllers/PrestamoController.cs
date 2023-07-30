@@ -1,10 +1,9 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Mvc;
 using PruebaIngresoblibliotecario.Core.DTOs;
-using PruebaIngresoblibliotecario.Core.Entities;
+using PruebaIngresoblibliotecario.Core.DTOs.Inputs;
 using PruebaIngresoblibliotecario.Core.Exceptions;
 using PruebaIngresoblibliotecario.Core.Interfaces.Services;
+using PruebaIngresoblibliotecario.Core.utils;
 using System;
 using System.Threading.Tasks;
 
@@ -15,19 +14,17 @@ namespace PruebaIngresoBibliotecario.Api.Controllers
     public class PrestamoController : ControllerBase
     {
         private readonly IPrestamoService _prestamoService;
-        private readonly IMapper _mapper;
-        private readonly ILogger<PrestamoController> _logger;
 
-        public PrestamoController(IPrestamoService prestamoService, IMapper mapper, ILogger<PrestamoController> logger)
+        public PrestamoController(IPrestamoService prestamoService)
         {
             _prestamoService = prestamoService;
-            _mapper = mapper;
-            _logger = logger;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<Prestamo>> GetPrestamos() => Ok(await _prestamoService.GetAllAsync());
-
+        /// <summary>
+        /// Finalidad: Obtener la información de un prestamo a través del Id
+        /// </summary>
+        /// <param name="idPrestamo">Identificador único del prestamo</param>
+        /// <returns></returns>
         [HttpGet("{idPrestamo}")]
         public async Task<IActionResult> GetprestamoById(Guid idPrestamo)
         {
@@ -39,27 +36,37 @@ namespace PruebaIngresoBibliotecario.Api.Controllers
             return NotFound(new { Mensaje = $"El prestamo con id {idPrestamo} no existe" });
         }
 
-
+        /// <summary>
+        /// Finalidad: Registrar un nuevo prestamo asociado a un tipo de usuario
+        /// </summary>
+        /// <param name="prestamoDTO">Información del prestamo a registrar</param>
+        /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult> CrearPrestamo(PrestamoDTO prestamoDTO)
+        public async Task<ActionResult<PrestamoCreadoDto>> CrearPrestamo(CrearPrestamoDto prestamoInput)
         {
             try
             {
-                Prestamo prestamo = _mapper.Map<Prestamo>(prestamoDTO);
-                var response = await _prestamoService.CreateAsync(prestamo);
-                return Ok(new { Id = response.Id, FechaMaximaDevolucion = prestamo.FechaMaximaDevolucion.ToShortDateString() });
-
+                PrestamoCreadoDto response = await _prestamoService.CreateAsync(prestamoInput);
+                return Ok(response);
             }
             catch (ExistePrestamoException ex)
             {
                 return BadRequest(new { Mensaje = ex.Message });
             }
-            catch (System.Exception)
+        }
+
+        [HttpPatch]
+        public async Task<IActionResult> DevolverPrestamo([FromBody] DevolverPrestamoInput prestamoInput)
+        {
+            try
             {
-                return BadRequest();
+                Respuesta response = await _prestamoService.DevolverPrestamo(prestamoInput);
+                return Ok(response);
             }
-
-        }        
-
+            catch (ExistePrestamoException ex)
+            {
+                return BadRequest(new { Mensaje = ex.Message });
+            }
+        }
     }
 }

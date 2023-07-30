@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using PruebaIngresoblibliotecario.Core.DTOs;
+using PruebaIngresoblibliotecario.Core.DTOs.Inputs;
 using PruebaIngresoblibliotecario.Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PruebaIngresoblibliotecario.Core.Mappers
 {
@@ -11,8 +9,11 @@ namespace PruebaIngresoblibliotecario.Core.Mappers
     {
         public PrestamoMappingProfile()
         {
-            CreateMap<PrestamoDTO, Prestamo>().ReverseMap();
+            CreateMap<CrearPrestamoDto, Prestamo>()
+                .ForMember(dest => dest.IdentificacionUsuario, opt => opt.MapFrom(src => src.IdentificacionUsuario.Trim()));
+            CreateMap<Prestamo, PrestamoCreadoDto>()
+                .ForMember(dest => dest.FechaMaximaDevolucion, opt => opt.MapFrom(src => src.FechaMaximaDevolucion.ToShortDateString()));
+            CreateMap<Prestamo, DataPrestamoDto>();
         }
-
     }
 }

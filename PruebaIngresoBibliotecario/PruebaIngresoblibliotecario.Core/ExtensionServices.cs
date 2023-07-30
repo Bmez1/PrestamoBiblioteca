@@ -3,9 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using PruebaIngresoblibliotecario.Core.Interfaces.Services;
 using PruebaIngresoblibliotecario.Core.Mappers;
 using PruebaIngresoblibliotecario.Core.Services;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PruebaIngresoblibliotecario.Core
 {
@@ -18,7 +15,7 @@ namespace PruebaIngresoblibliotecario.Core
             return services;
         }
 
-        public static void AddMappingCore(this IServiceCollection services) 
+        public static void AddMappingCore(this IServiceCollection services)
         {
             var mapperConfig = new MapperConfiguration(confi =>
             {

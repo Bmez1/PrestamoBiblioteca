@@ -3,8 +3,7 @@ using PruebaIngresoBibliotecario.Infraestructura.Context;
 using PruebaIngresoblibliotecario.Core.Interfaces.Repository;
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace PruebaIngresoBibliotecario.Infraestructura.Repositories
@@ -28,8 +27,20 @@ namespace PruebaIngresoBibliotecario.Infraestructura.Repositories
             return entity;
         }
 
-        public async Task<IEnumerable<TEntity>> GetAllAsync() => await _db.ToListAsync();
+        public async Task<IEnumerable<TEntity>> GetAllAsync(Func<TEntity, bool> condition = null)
+        {
+            return condition == null ? await _db.ToListAsync() : _db.Where(condition).ToList();
+        }
 
         public virtual async Task<TEntity> GetByIdAsync(Guid id) => await _db.FindAsync(id);
+
+        public async Task<TEntity> UpdateAsync(TEntity entity)
+        {
+            _context.Entry(entity).State = EntityState.Modified;
+
+            await _context.SaveChangesAsync();
+
+            return entity;
+        }
     }
 }
